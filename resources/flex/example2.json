@@ -1,0 +1,26 @@
+{
+    "type": "bubble",
+    "direction": "ltr",
+    "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": ${header_contents}
+    },
+    "hero": {
+        "type": "image",
+        "url": "${hero_image_url}",
+        "size": "full",
+        "aspectRatio": "1.51:1",
+        "aspectMode": "fit"
+    },
+    "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": ${body_contents}
+    },
+    "footer": {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": ${footer_contents}
+    }
+}

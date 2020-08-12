@@ -1,0 +1,47 @@
+{
+    "type": "bubble",
+    "direction": "ltr",
+    "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+            {
+                "type": "text",
+                "text": "${header_text}",
+                "align": "center"
+            }
+        ]
+    },
+    "hero": {
+        "type": "image",
+        "url": "${hero_image_url}",
+        "size": "full",
+        "aspectRatio": "1.51:1",
+        "aspectMode": "fit"
+    },
+    "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+            {
+                "type": "text",
+                "text": "${body_text}",
+                "align": "center"
+            }
+        ]
+    },
+    "footer": {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+            {
+                "type": "button",
+                "action": {
+                    "type": "uri",
+                    "label": "${button_label}",
+                    "uri": "${button_url}"
+                }
+            }
+        ]
+    }
+}
