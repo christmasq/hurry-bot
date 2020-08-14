@@ -43,13 +43,17 @@ class LineController extends Controller
      */
     public function pushMessage(Request $request, Client $client)
     {
-        $to = $request->input('to'); // user_id or group_id
-        $contents = $request->input('contents'); // json format
-        $content_array = json_decode($contents, true);
-        if ($content_array) {
-            $message = new Message();
-            $message->addMultiMessageBuilders($content_array);
-            $client->pushMessage($to, $message->getBuilders());
+        try {
+            $to = $request->input('to'); // user_id or group_id
+            $contents = $request->input('contents'); // json format
+            $content_array = json_decode($contents, true);
+            if ($content_array) {
+                $message = new Message();
+                $message->addMultiMessageBuilders($content_array);
+                $client->pushMessage($to, $message->getBuilders());
+            }
+        } catch (\Exception $e) {
+            Log::error($e->getMessage() . "\nRequest Header: " . $request->headers, $request->toArray());
         }
     }
 }

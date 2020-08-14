@@ -68,7 +68,8 @@ class Client
 
             // record log when failed
             if (!$response->isSucceeded()) {
-                Log::debug(__FUNCTION__ . ", " . var_export($response, 1));
+                Log::debug(__FUNCTION__ . ", " . $response->getRawBody());
+                return false;
             }
             return true;
         } else {
@@ -80,74 +81,88 @@ class Client
      * common method, push message by builder
      * @param string $to user_id/group_id
      * @param object $builder
+     * @return bool
      */
     public function pushMessage($to, $builder)
     {
-        $response = $this->bot->pushMessage($to, $builder);
+        if ($builder) {
+            $response = $this->bot->pushMessage($to, $builder);
 
-        // record log when failed
-        if (!$response->isSucceeded()) {
-            Log::debug(__FUNCTION__ . ", " . var_export($response, 1));
+            // record log when failed
+            if (!$response->isSucceeded()) {
+                Log::debug(__FUNCTION__ . ", " . $response->getRawBody());
+                return false;
+            }
+
+            return true;
+        } else {
+            return false;
         }
     }
 
     /**
      * reply image message
      * @param string $text
+     * @return bool
      */
     public function replyText($text)
     {
-        $this->replyMessage(Message::text($text));
+        return $this->replyMessage(Message::text($text));
     }
 
     /**
      * reply image message
      * @param string $image_url
      * @param string $preview_image_url
+     * @return bool
      */
     public function replyImage($image_url, $preview_image_url = '')
     {
-        $this->replyMessage(Message::image($image_url, $preview_image_url));
+        return $this->replyMessage(Message::image($image_url, $preview_image_url));
     }
 
     /**
      * reply video message
      * @param string $video_url
      * @param string $preview_image_url
+     * @return bool
      */
     public function replyVideo($video_url, $preview_image_url)
     {
-        $this->replyMessage(Message::video($video_url, $preview_image_url));
+        return $this->replyMessage(Message::video($video_url, $preview_image_url));
     }
 
     /**
      * reply sticker message
      * @param int $package_id
      * @param int $sticker_id
+     * @return bool
      */
     public function replySticker($package_id, $sticker_id)
     {
-        $this->replyMessage(Message::sticker($package_id, $sticker_id));
+        return $this->replyMessage(Message::sticker($package_id, $sticker_id));
     }
 
     /**
      * push text message
      * @param string $to
      * @param string $text
+     * @return bool
      */
     public function pushText($to, $text)
     {
-        $this->pushMessage($to, Message::text($text));
+        return $this->pushMessage($to, Message::text($text));
     }
 
     /**
      * push image message
      * @param string $to
      * @param string $image_url
+     * @return bool
      */
     public function pushImage($to, $image_url)
     {
-        $this->pushMessage($to, Message::image($image_url));
+        return $this->pushMessage($to, Message::image($image_url));
     }
 
     /**

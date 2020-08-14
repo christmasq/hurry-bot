@@ -3,6 +3,7 @@
 
 namespace App\Services\Line\Builder;
 
+use Illuminate\Support\Facades\Log;
 use LINE\LINEBot\Constant\MessageType;
 use LINE\LINEBot\ImagemapActionBuilder;
 use LINE\LINEBot\MessageBuilder;
@@ -69,32 +70,35 @@ class Message
      */
     public function addMultiMessageBuilders($contents = [])
     {
-        foreach ($contents as $content) {
-            switch ($content['type']) {
-                case MessageType::TEXT:
-                    $this->addBuilder(static::text($content['text']));
-                    break;
-                case MessageType::IMAGE:
-                    $this->addBuilder(static::image($content['url']));
-                    break;
-                case MessageType::STICKER:
-                    $this->addBuilder(static::sticker($content['package_id'], $content['sticker_id']));
-                    break;
-                case MessageType::LOCATION:
-                    $this->addBuilder(static::location($content['title'], $content['address'], $content['latitude'], $content['longitude']));
-                    break;
-                case MessageType::FLEX:
-                    $this->addBuilder(static::flex($content['json'], $content['data_vars'], $content['alt_text']));
-                    break;
-                case MessageType::VIDEO:
-                    $this->addBuilder(static::video($content['url'], $content['preview_image_url']));
-                    break;
-                case MessageType::AUDIO:
-                    $this->addBuilder(static::audio($content['url'], $content['duration']));
-                case MessageType::IMAGEMAP:
-                    $this->addBuilder(static::imagemap($content['base_url'], $content['alt_text'], $content['base_size'], $content['action']));
-                default:
+        try {
+            foreach ($contents as $content) {
+                switch ($content['type']) {
+                    case MessageType::TEXT:
+                        $this->addBuilder(static::text($content['text']));
+                        break;
+                    case MessageType::IMAGE:
+                        $this->addBuilder(static::image($content['url']));
+                        break;
+                    case MessageType::STICKER:
+                        $this->addBuilder(static::sticker($content['package_id'], $content['sticker_id']));
+                        break;
+                    case MessageType::LOCATION:
+                        $this->addBuilder(static::location($content['title'], $content['address'], $content['latitude'], $content['longitude']));
+                        break;
+                    case MessageType::FLEX:
+                        $this->addBuilder(static::flex($content['json'], $content['data_vars'], $content['alt_text']));
+                        break;
+                    case MessageType::VIDEO:
+                        $this->addBuilder(static::video($content['url'], $content['preview_image_url']));
+                        break;
+                    case MessageType::AUDIO:
+                        $this->addBuilder(static::audio($content['url'], $content['duration']));
+                    default:
+                        Log::warning('not supported message type');
+                }
             }
+        } catch (\Exception $e) {
+            Log::debug(__FUNCTION__ . ' exception: ' . $e->getMessage());
         }
     }
 
@@ -158,18 +162,6 @@ class Message
     public static function location($title, $address, $latitude, $longitude)
     {
         return new LocationMessageBuilder($title, $address, $latitude, $longitude);
-    }
-
-    /**
-     * @param string $base_url
-     * @param string $alt_text
-     * @param BaseSizeBuilder $base_size
-     * @param ImagemapActionBuilder[] $action
-     * @return ImagemapMessageBuilder
-     */
-    public static function imagemap($base_url, $alt_text, $base_size, $action)
-    {
-        return new ImagemapMessageBuilder($base_url, $alt_text, $base_size, $action);
     }
 
     /**

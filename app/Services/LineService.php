@@ -12,6 +12,10 @@ use LINE\LINEBot\Constant\Flex\ComponentAlign;
 use LINE\LINEBot\Constant\Flex\ComponentImageSize;
 use LINE\LINEBot\Constant\MessageType;
 use LINE\LINEBot\Event\BaseEvent;
+use LINE\LINEBot\Event\MessageEvent;
+use LINE\LINEBot\Event\MessageEvent\LocationMessage;
+use LINE\LINEBot\Event\MessageEvent\TextMessage;
+use LINE\LINEBot\Event\PostbackEvent;
 use LINE\LINEBot\MessageBuilder\Flex\ComponentBuilder\ButtonComponentBuilder;
 use LINE\LINEBot\MessageBuilder\Flex\ComponentBuilder\ImageComponentBuilder;
 use LINE\LINEBot\MessageBuilder\Flex\ComponentBuilder\TextComponentBuilder;
@@ -26,6 +30,11 @@ class LineService
         $this->client = $client;
     }
 
+    /**
+     * handle event
+     * @param BaseEvent[] $events
+     * @throws \LINE\LINEBot\Exception\InvalidEventSourceException
+     */
     public function handleEvent(array $events)
     {
         foreach ($events as $event) {
@@ -44,13 +53,13 @@ class LineService
 
     /**
      * handle message event
-     * @param BaseEvent $event
+     * @param MessageEvent $event
      * @return TemplateMessageBuilder|TextMessageBuilder|string
      * @throws GuzzleException
      * @throws LINEBot\Exception\InvalidEventSourceException
      * @throws \LINE\LINEBot\Exception\InvalidEventSourceException
      */
-    public function handleMessageEvent(BaseEvent $event)
+    public function handleMessageEvent(MessageEvent $event)
     {
         switch ($event->getMessageType()) {
             case MessageType::TEXT:
@@ -68,10 +77,10 @@ class LineService
 
     /**
      * handle text message event
-     * @param BaseEvent $event
+     * @param TextMessage $event
      * @throws \LINE\LINEBot\Exception\InvalidEventSourceException
      */
-    public function handleTextMessageEvent(BaseEvent $event)
+    public function handleTextMessageEvent(TextMessage $event)
     {
         // get event info (You can use the ids to identify user or group)
         $text = trim($event->getText());
@@ -81,6 +90,40 @@ class LineService
 
         // reply message by text (example method)
         $this->replyMessageByText($text);
+    }
+
+    /**
+     * handle location message event
+     * @param LocationMessage $event
+     */
+    public function handleLocationMessageEvent(LocationMessage $event)
+    {
+        // get event info (the location info of user marks)
+        $user_id = $event->getUserId();
+        $address = $event->getAddress();
+        $latitude = $event->getLatitude();
+        $longitude = $event->getLongitude();
+        $title = $event->getTitle();
+
+        // reply message example
+        $reply_text = "Location: " . $title . "\n" . $address . "\n" . "(" . $latitude . ", " . $longitude . ")";
+        $this->client->replyText($reply_text);
+    }
+
+    /**
+     * handle postback event
+     * @param PostbackEvent $event
+     */
+    public function handlePostbackEvent(PostbackEvent $event)
+    {
+        // get event info
+        $user_id = $event->getUserId();
+        $data = [];
+        parse_str($event->getPostbackData(), $data);
+        $params = $event->getPostbackParams();
+
+        // reply message example
+        $this->client->replyText('test');
     }
 
     /**
@@ -221,39 +264,5 @@ class LineService
 
         // reply message by builders
         $this->client->replyMessage($message->getBuilders());
-    }
-
-    /**
-     * handle location message event
-     * @param BaseEvent $event
-     */
-    public function handleLocationMessageEvent(BaseEvent $event)
-    {
-        // get event info (the location info of user marks)
-        $user_id = $event->getUserId();
-        $address = $event->getAddress();
-        $latitude = $event->getLatitude();
-        $longitude = $event->getLongitude();
-        $title = $event->getTitle();
-
-        // reply message example
-        $reply_text = "Location: " . $title . "\n" . $address . "\n" . "(" . $latitude . ", " . $longitude . ")";
-        $this->client->replyText($reply_text);
-    }
-
-    /**
-     * handle postback event
-     * @param BaseEvent $event
-     */
-    public function handlePostbackEvent(BaseEvent $event)
-    {
-        //
-        $qs = [];
-        parse_str($event->getPostbackData(), $qs);
-        switch ($qs['type']) {
-            case 'text':
-                $this->client->replyText($qs['displayText']);
-                break;
-        }
     }
 }
