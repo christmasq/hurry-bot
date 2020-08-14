@@ -7,6 +7,7 @@ Provide the LINE bot framework and basic setting to decrease the time to build a
  - Open terminal and into the project folder (`cd /path/to/hurry_bot`)
  - Install library by composer (`composer install`)
  - Copy `env.example` to `env` (`cp env.example env`)
+ - Generate app key to laravel project (`php artisan key:generate`)
  - Set the permission of storage folder (`chmod -R 777 storage`)
  - Set `LINE_CHANNEL_ACCESS_TOKEN` and `LINE_CHANNEL_SECRET` values to env setting (generated at LINE Developers)
    - LINE Developers > Messaging API > Channel access token
@@ -86,7 +87,6 @@ Provide the LINE bot framework and basic setting to decrease the time to build a
    - config/line.php
 ​
 ## Illustration
-​
 ### Examples
  - `app/Services/LineService::replyMessageByText`
 ​
