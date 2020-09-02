@@ -1,5 +1,8 @@
 # hurry-bot v1.0
 ​
+[![pipeline status](https://gitlab.com/chrischuang/hurry-bot/badges/master/pipeline.svg)](https://gitlab.com/chrischuang/hurry-bot/-/commits/master)
+[![coverage report](https://gitlab.com/chrischuang/hurry-bot/badges/master/coverage.svg)](https://gitlab.com/chrischuang/hurry-bot/-/commits/master)
+
 Provide the LINE bot framework and basic setting to decrease the time to build a LINE bot.
 ​
 ## Installation

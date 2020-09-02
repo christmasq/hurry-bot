@@ -9,10 +9,23 @@ test:
     - composer install --prefer-dist --no-ansi --no-interaction --no-progress
     - cp .env.example .env
     - php artisan key:generate
-    - ./vendor/phpunit/phpunit/phpunit -v --coverage-text --colors=never --stderr
-
+    - ./vendor/phpunit/phpunit/phpunit -v --coverage-text --colors=never --coverage-html=coverage --stderr
+  artifacts:
+    paths:
+      - coverage/
 cache:
   paths:
     - vendor/
     - node_modules/
-    - public/
+
+pages:
+  stage: deploy
+  dependencies:
+    - test
+  script:
+    - rm -r public
+    - mv coverage/ public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
