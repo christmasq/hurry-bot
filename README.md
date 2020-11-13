@@ -120,7 +120,8 @@ chmod -R 777 storage
      - pushMessage (not necessary method, for push message by api case)
  ### Providers (Fixed)
    - LineServiceProvider.php
- ###Configs (Fixed)
+
+ ### Configs (Fixed)
    - config/line.php
 ​
 ## Illustration
