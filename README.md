@@ -3,18 +3,50 @@
 [![pipeline status](https://gitlab.com/chrischuang/hurry-bot/badges/master/pipeline.svg)](https://gitlab.com/chrischuang/hurry-bot/-/commits/master)
 [![coverage report](https://gitlab.com/chrischuang/hurry-bot/badges/master/coverage.svg)](https://gitlab.com/chrischuang/hurry-bot/-/commits/master)
 
+## Introduction
 Provide the LINE bot framework and basic setting to decrease the time to build a LINE bot.
 ​
+## Documentation
+ - LINE Messaging API SDK for PHP: [line-bot-sdk-php](https://github.com/line/line-bot-sdk-php)
+ - LINE Develops
+   - Console: [Console](https://developers.line.biz/console/)
+   - Reference: [Messaging API reference](https://developers.line.biz/en/reference/messaging-api/)
+
+## Requirements
+ - PHP 7.2.5 or later
+ - [Composer](https://getcomposer.org/download/)
+ - [Gitlab](https://gitlab.com/) account
+
 ## Installation
  - Fork this project and clone to your environment
- - Open terminal and into the project folder (`cd /path/to/hurry_bot`)
- - Install library by composer (`composer install`)
- - Copy `env.example` to `env` (`cp env.example env`)
- - Generate app key to laravel project (`php artisan key:generate`)
- - Set the permission of storage folder (`chmod -R 777 storage`)
+```bash
+git clone git@gitlab.com:{username}/hurry-bot.git
+```
+ - Open terminal and into the project folder
+```bash
+cd /path/to/hurry_bot
+```
+ - Install library by composer
+```bash
+composer install
+```
+ - Copy `env.example` to `env`
+```bash
+cp env.example env
+```
+ - Generate app key to laravel project
+```bash
+php artisan key:generate
+``` 
+ - Set the permission of storage folder
+```bash
+chmod -R 777 storage
+```
  - Set `LINE_CHANNEL_ACCESS_TOKEN` and `LINE_CHANNEL_SECRET` values to env setting (generated at LINE Developers)
    - LINE Developers > Messaging API > Channel access token
+     - `https://developers.line.biz/console/channel/{channel_id}/messaging-api`
    - LINE Developers > Basic settings > Channel secret
+     - `https://developers.line.biz/console/channel/{channel_id}/basics`
  - Set webhook settings at LINE Developers
    - LINE Developers > Messaging API > Webhook settings
    - Expected webhook url: `https://yourdomain/api/line/webhook` (`yourdomain` is substitute word)
@@ -35,19 +67,12 @@ Provide the LINE bot framework and basic setting to decrease the time to build a
  - Run and check
  - Done
 ​
-## Structures of the framework
- - Services
+## Components
+ ### Services
    - Builder
      - Message
-       - Builder Items
-         - text
-         - image
-         - video
-         - audio
-         - sticker
-         - location
-         - imagemap
-         - flex
+       - Items: [LINE Message types](https://developers.line.biz/en/docs/messaging-api/message-types/)
+         - text, image, video, audio, sticker, location, imagemap, flex
        - Methods
          - addBuilder
          - addMultiMessageBuilders
@@ -55,6 +80,9 @@ Provide the LINE bot framework and basic setting to decrease the time to build a
      - Flex (construct flex message by json file)
        - JsonFlexMessageBuilder
        - resources/flex
+
+   ---
+ 
    - Client
       - Flow Methods
         - parseEvent (parse LINE event request to base event objects)
@@ -73,20 +101,26 @@ Provide the LINE bot framework and basic setting to decrease the time to build a
         - getGroupMemberProfile
       - Action Methods
         - leaveGroup (let LINE bot leave the current group or room)
+
+   ---
+
    - LineService
      - handleEvent
        - handleMessageEvent
          - handleTextMessageEvent (Main flow, adjustable by user)
          - handleLocationMessageEvent
        - handlePostbackEvent
- - Routes (Fixed)
+ 
+   ---
+
+ ### Routes (Fixed)
    - routes/api.php
    - LineController.php
      - webhook
      - pushMessage (not necessary method, for push message by api case)
- - Providers (Fixed)
+ ### Providers (Fixed)
    - LineServiceProvider.php
- - Configs (Fixed)
+ ###Configs (Fixed)
    - config/line.php
 ​
 ## Illustration
@@ -94,7 +128,7 @@ Provide the LINE bot framework and basic setting to decrease the time to build a
  - `app/Services/LineService::replyMessageByText`
 ​
 ### How to reply text message
-```
+```php
 $message = new Message();
 $message->addBuilder(Message::text($reply_text));
 $this->client->replyMessage($message->getBuilders());
@@ -102,11 +136,11 @@ $this->client->replyMessage($message->getBuilders());
 ​
 ### How to reply multiple messages
   - New `Message` class
-```
+```php
 $message = new Message();
 ```
   - Set contents by array format, the keys reference by the parameter of message builder
-```
+```php
 // the example of multiple type messages
 $contents = [
     ['type' => MessageType::TEXT, 'text' => $example_text],
@@ -115,7 +149,7 @@ $contents = [
 $message->addMultiMessageBuilders($contents);
 ```
   - reply message by builders 
-```
+```php
 $this->client->replyMessage($message->getBuilders());
 ```
 ​
@@ -124,7 +158,7 @@ $this->client->replyMessage($message->getBuilders());
   - Copy the part of the bubble container in the property `contents` of flex json
   - Define the variable part of the container by the specific variable format (ex. `${header_text}`)
   - New `Message` class and basic setting
-```
+```php
 $message = new Message();
 ​
 // put the file in the `resource/flex` path
@@ -133,7 +167,7 @@ $data_var = [];
 $alt_text = 'Example';
 ```
   - Use the data array of variables to generate a multiple containers of flex message
-```
+```php
 // example of five bubble containers in carousel container
 for ($i = 0;$i < 5;++$i) {
     // set values of json file variables
@@ -149,6 +183,6 @@ for ($i = 0;$i < 5;++$i) {
 $message->addBuilder(Message::flex($json, $data_var, 'Example'));
 ```
   - reply message by builder
-```
+```php
 $this->client->replyMessage($message->getBuilders());
 ```
