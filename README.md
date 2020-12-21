@@ -1,11 +1,13 @@
 # hurry-bot v1.0
-​
+
 [![pipeline status](https://gitlab.com/chrischuang/hurry-bot/badges/master/pipeline.svg)](https://gitlab.com/chrischuang/hurry-bot/-/commits/master)
 [![coverage report](https://gitlab.com/chrischuang/hurry-bot/badges/master/coverage.svg)](https://gitlab.com/chrischuang/hurry-bot/-/commits/master)
 
 ## Introduction
 Provide the LINE bot framework and basic setting to decrease the time to build a LINE bot.
-​
+
+https://gitlab.com/chrischuang/hurry-bot
+
 ## Documentation
  - LINE Messaging API SDK for PHP: [line-bot-sdk-php](https://github.com/line/line-bot-sdk-php)
  - LINE Develops
